@@ -1,3 +1,5 @@
+package com.spbstu.yuryvalentinasov;
+
 import java.util.Objects;
 
 public class Book {

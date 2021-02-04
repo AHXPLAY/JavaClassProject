@@ -1,6 +1,6 @@
+package com.spbstu.yuryvalentinasov;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -15,7 +15,7 @@ import java.util.Objects;
  * поиск книг по их параметрам.
  */
 public class Library {
-    private ArrayList<Book> libraryList = new ArrayList();
+    private ArrayList<Book> libraryList = new ArrayList<>();
 
     private final int shelfSize = 5;
 
@@ -40,6 +40,7 @@ public class Library {
     public Book deleteBook(int index) {
         return libraryList.remove(index);
     }
+
     public Library(Book ...books) {
         for (Book book:books) {
             book.setShelf(generateShelf(book));
@@ -66,6 +67,7 @@ public class Library {
         Book book = libraryList.get(index);
         char[] bookShelf = book.getShelf().toCharArray();
         book.setShelf(bookShelf[0] + "" + number);
+        libraryList.set(index, book);
         return true;
     }
 
@@ -145,12 +147,12 @@ public class Library {
             String genre,
             String shelf) {
         ArrayList<Book> result = new ArrayList<>();
-        for (int i = 0; i < libraryList.size(); i++) {
-            boolean byName = name == null || libraryList.get(i).getName().equals(name);
-            boolean byAuthor = author == null || libraryList.get(i).getAuthor().equals(author);
-            boolean byGenre = genre == null || libraryList.get(i).getGenre().equals(genre);
-            boolean byShelf = shelf == null || libraryList.get(i).getShelf().equals(shelf);
-            if (byName && byAuthor && byGenre && byShelf) result.add(libraryList.get(i));
+        for (Book book : libraryList) {
+            boolean byName = name == null || book.getName().equals(name);
+            boolean byAuthor = author == null || book.getAuthor().equals(author);
+            boolean byGenre = genre == null || book.getGenre().equals(genre);
+            boolean byShelf = shelf == null || book.getShelf().equals(shelf);
+            if (byName && byAuthor && byGenre && byShelf) result.add(book);
         }
         return result;
     }
@@ -160,12 +162,12 @@ public class Library {
             String author,
             String genre,
             String shelf) {
-        for (int i = 0; i < libraryList.size(); i++) {
-            boolean byName = name == null || libraryList.get(i).getName().equals(name);
-            boolean byAuthor = author == null || libraryList.get(i).getAuthor().equals(author);
-            boolean byGenre = genre == null || libraryList.get(i).getGenre().equals(genre);
-            boolean byShelf = shelf == null || libraryList.get(i).getShelf().equals(shelf);
-            if (byName && byAuthor && byGenre && byShelf) return libraryList.get(i);
+        for (Book book : libraryList) {
+            boolean byName = name == null || book.getName().equals(name);
+            boolean byAuthor = author == null || book.getAuthor().equals(author);
+            boolean byGenre = genre == null || book.getGenre().equals(genre);
+            boolean byShelf = shelf == null || book.getShelf().equals(shelf);
+            if (byName && byAuthor && byGenre && byShelf) return book;
         }
         return null;
     }
@@ -186,21 +188,22 @@ public class Library {
     private String generateShelf(Book book) {
         char letter = book.getName().toCharArray()[0];
         int[] booksOnShelfArray = new int[libraryList.size()];
-        for (int i = 0; i < libraryList.size(); i++) {
-            char[] shelfArray = libraryList.get(i).getShelf().toCharArray();
+        for (Book value : libraryList) {
+            char[] shelfArray = value.getShelf().toCharArray();
             if (shelfArray.length > 0 && shelfArray[0] == letter) {
-                String numOfShelf = "";
+                StringBuilder numOfShelf = new StringBuilder();
                 for (int j = 1; j < shelfArray.length; j++) {
-                    numOfShelf += shelfArray[j];
+                    numOfShelf.append(shelfArray[j]);
                 }
-                int num = Integer.parseInt(numOfShelf);
+                int num = Integer.parseInt(numOfShelf.toString());
                 booksOnShelfArray[num]++;
             }
         }
         for (int i = 0; i < booksOnShelfArray.length; i++) {
             if (booksOnShelfArray[i] < shelfSize) return letter + "" + i;
         }
-        return "";
+        return letter + "" + 0;
     }
+
 
 }

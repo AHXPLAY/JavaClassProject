@@ -1,8 +1,9 @@
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.spbstu.yuryvalentinasov.Book;
+import com.spbstu.yuryvalentinasov.Library;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import java.util.ArrayList;
 
 class LibraryTest {
     Library lib = new Library();
@@ -46,9 +47,9 @@ class LibraryTest {
     @Test
     void deleteBook() {
         Book b1 = new Book("Руслан и Людмила", "Алекасандр Сергеевич Пушкин", "Поэма");
-        assertEquals(true, lib.deleteBook(b1));
+        assertTrue(lib.deleteBook(b1));
 
-        Book b2 = new Book("20000 лье под водой", "Жюль Верн", "Фантастика");
+        Book b2 = new Book("Двадцать тысяч лье под водой", "Жюль Верн", "Фантастика");
         assertEquals(b2, lib.deleteBook(0));
     }
     @Test
@@ -63,6 +64,20 @@ class LibraryTest {
         lib.changeBook(new Book("Хоббит", "Джон Рональд Руэл Толкиен", "Фэнтези"), b2);
 
         assertEquals(b2, lib.getLibraryList().get(2));
+    }
+    
+    @Test
+    void changeShelf() {
+        lib.changeShelf(0, 2);
+        assertEquals("Р2", lib.getLibraryList().get(0).getShelf());
+
+        lib.changeShelf(new Book("Хоббит", "Джон Рональд Руэл Толкиен", "Фэнтези"), 5);
+        assertEquals("Х5", lib.getLibraryList().get(2).getShelf());
+    }
+    
+    @Test
+    void findbyName() {
+        
     }
 
 }
