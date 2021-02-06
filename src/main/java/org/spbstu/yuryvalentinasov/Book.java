@@ -1,4 +1,4 @@
-package com.spbstu.yuryvalentinasov;
+package org.spbstu.yuryvalentinasov;
 
 import java.util.Objects;
 
@@ -51,9 +51,19 @@ public class Book {
         if (this == o) return true;
         if (!(o instanceof Book)) return false;
         Book book = (Book) o;
-        return name.equals(book.name) &&
-                author.equals(book.author) &&
-                genre.equals(book.genre);
+
+        boolean isNamesEquals =
+                (name == null && book.name == null) || (name != null && name.equals(book.name));
+
+        boolean isAuthorsEquals =
+                (author == null && book.author == null) || (author != null && author.equals(book.author));
+
+        boolean isGenresEquals =
+                (genre == null && book.genre == null) || (genre != null && genre.equals(book.genre));
+
+        return  isNamesEquals &&
+                isAuthorsEquals &&
+                isGenresEquals;
     }
 
     @Override
