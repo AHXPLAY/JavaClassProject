@@ -1,8 +1,10 @@
+package org.spbstu.yuryvalentinasov.tests;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.spbstu.yuryvalentinasov.Book;
 import org.spbstu.yuryvalentinasov.Library;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
@@ -29,15 +31,29 @@ class LibraryTest {
 
 
     @Test
+    void constructorTest() {
+
+        Library test0 = new Library(new Book("Старорусские писания не имеющие ни автора, ни жанра", "", ""));
+        assertEquals(1, test0.getList().size());
+
+        Library test1 = new Library((Book[]) null);
+        assertEquals(0, test1.getList().size());
+
+        Library test2 = new Library(new Book("", "", ""));
+        assertEquals(0, test2.getList().size());
+    }
+
+
+    @Test
     void addBook() {
         Book b1 = new Book("Мастер и маргарита", "Михаил Афанасьевич Булгаков", "Роман");
         lib.deleteBook(new Book("Мертвые души", "Николай Васильевич Гоголь", "Поэма"));
-        lib.add(b1);
-        Book addedBook = lib.get(lib.size() - 1);
+        lib.addBook(b1);
+        Book addedBook = lib.getList().get(lib.getList().size() - 1);
         assertEquals(b1, addedBook);
         assertEquals("М0", addedBook.getShelf());
 
-        assertFalse(lib.add(null));
+        assertFalse(lib.addBook(null));
 
 
 
@@ -55,23 +71,23 @@ class LibraryTest {
     void changeBook() {
         Book b1 = new Book("Зов Ктулху", "Говард Филлипс Лавкрафт", "Ужасы");
         lib.changeBook(0, b1);
-        assertEquals(b1, lib.get(0));
+        assertEquals(b1, lib.getList().get(0));
 
         Book b2 = new Book("Чистый код. Создание, анализ и рефакторинг",
                 "Робер Мартин",
                 "Научно-техническая литература");
         lib.changeBook(new Book("Хоббит", "Джон Рональд Руэл Толкиен", "Фэнтези"), b2);
 
-        assertEquals(b2, lib.get(2));
+        assertEquals(b2, lib.getList().get(2));
     }
     
     @Test
     void changeShelfOrder() {
         lib.changeShelfOrder(0, 2);
-        assertEquals("Р2", lib.get(0).getShelf());
+        assertEquals("Р2", lib.getList().get(0).getShelf());
 
         lib.changeShelfOrder(new Book("Хоббит", "Джон Рональд Руэл Толкиен", "Фэнтези"), 5);
-        assertEquals("Х5", lib.get(2).getShelf());
+        assertEquals("Х5", lib.getList().get(2).getShelf());
     }
     
     @Test
@@ -175,7 +191,7 @@ class LibraryTest {
     }
 
     @Test
-    void testEquals() {
+    void testEqualsBook() {
         Book b1 = new Book("Книга", "Автор", "Жанр");
         Book b2 = new Book("Книга", "Автор", "Жанр");
         assertEquals(b2, b1);
@@ -191,6 +207,20 @@ class LibraryTest {
         assertNotEquals(b6, b5);
         assertNotEquals(b5, b6);
 
+    }
+
+    @Test
+    void testEqualsLibrary() {
+        Library l1 = new Library(
+                new Book("Книга", "Автор", "Жанр")
+        );
+        Library l2 = new Library(
+                new Book("Книга", "Автор", "Жанр")
+        );
+
+        assertEquals(l1, l2);
+
+        assertNotEquals(l1, null);
     }
 
 }

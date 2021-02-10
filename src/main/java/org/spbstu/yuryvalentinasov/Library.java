@@ -12,34 +12,32 @@ import java.util.*;
  * изменить существующую книгу changeBook,
  * переставить книгу на другую полку changeShelf,
  * поиск книг по их параметрам.
- *
+ * <p>
  * Для избежания NPE добавил всем методам добавляющим
  * в список новые объекты (в том числе и конструктору)
  * проверку объектов на null, таким образом, что в
  * список нельзя добавить null.
  */
-public class Library extends ArrayList<Book> {
+public class Library {
+    private final List<Book> list = new ArrayList<>();
 
     private final int shelfSize = 5;
 
-    @Override
-    public boolean add(Book book) {
-        if (book == null) return false;
+    public List<Book> getList() {
+        return list;
+    }
+
+    public boolean addBook(Book book) {
+        if (book == null || book.getName().length() == 0) return false;
         book.setShelf(generateShelf(book));
-        super.add(book);
+        list.add(book);
         return true;
     }
 
-    @Override
-    public boolean addAll(Collection<? extends Book> c) {
-        for (Book book: c) if (book == null) return false;
-        return super.addAll(c);
-    }
-
     public boolean deleteBook(Book book) {
-        for (int i = 0; i < this.size(); i++) {
-            if (this.get(i).equals(book)) {
-                return this.remove(book);
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(book)) {
+                return list.remove(book);
             }
         }
         return false;
@@ -47,26 +45,25 @@ public class Library extends ArrayList<Book> {
 
     public boolean deleteBook(int index) {
         if (isIndexIncorrect(index)) return false;
-        return this.remove(index) != null;
+        return list.remove(index) != null;
     }
 
     public Library(Book... books) {
-        for (Book book : books) {
-            if (book == null) continue;
-            book.setShelf(generateShelf(book));
-            this.add(book);
-        }
+        if (books != null)
+            for (Book book : books) {
+                this.addBook(book);
+            }
     }
 
     public boolean changeBook(int index, Book newBook) {
         if (isIndexIncorrect(index)) return false;
-        this.set(index, newBook);
+        list.set(index, newBook);
         return true;
     }
 
     public boolean changeBook(Book changingBook, Book newBook) {
-        if (this.contains(changingBook)) {
-            int index = this.indexOf(changingBook);
+        if (list.contains(changingBook)) {
+            int index = list.indexOf(changingBook);
             return changeBook(index, newBook);
         }
         return false;
@@ -74,22 +71,22 @@ public class Library extends ArrayList<Book> {
 
     public boolean changeShelfOrder(int index, int number) {
         if (isIndexIncorrect(index)) return false;
-        Book book = this.get(index);
+        Book book = list.get(index);
         char[] bookShelf = book.getShelf().toCharArray();
         book.setShelf(bookShelf[0] + "" + number);
-        this.set(index, book);
+        list.set(index, book);
         return true;
     }
 
     public boolean changeShelfOrder(Book book, int number) {
-        if (this.contains(book)) {
-            int index = this.indexOf(book);
+        if (list.contains(book)) {
+            int index = list.indexOf(book);
             return changeShelfOrder(index, number);
         }
         return false;
     }
 
-    public ArrayList<Book> findAllByName(String name) {
+    public List<Book> findAllByName(String name) {
         return findAllByParams(name, null, null, null);
     }
 
@@ -97,7 +94,7 @@ public class Library extends ArrayList<Book> {
         return findByParams(name, null, null, null);
     }
 
-    public ArrayList<Book> findAllByAuthor(String author) {
+    public List<Book>  findAllByAuthor(String author) {
         return findAllByParams(null, author, null, null);
     }
 
@@ -105,7 +102,7 @@ public class Library extends ArrayList<Book> {
         return findByParams(null, author, null, null);
     }
 
-    public ArrayList<Book> findAllByGenre(String genre) {
+    public List<Book>  findAllByGenre(String genre) {
         return findAllByParams(null, null, genre, null);
     }
 
@@ -114,7 +111,7 @@ public class Library extends ArrayList<Book> {
     }
 
 
-    public ArrayList<Book> findAllByShelf(String shelf) {
+    public List<Book> findAllByShelf(String shelf) {
         return findAllByParams(null, null, null, shelf);
     }
 
@@ -123,7 +120,7 @@ public class Library extends ArrayList<Book> {
     }
 
 
-    public ArrayList<Book> findAllByParams(
+    public List<Book>  findAllByParams(
             String name,
             String author,
             String genre,
@@ -131,7 +128,7 @@ public class Library extends ArrayList<Book> {
 
         ArrayList<Book> resultList = new ArrayList<>();
 
-        this.stream().filter(book -> isSubstringContains(book.getName(), name) &&
+        list.stream().filter(book -> isSubstringContains(book.getName(), name) &&
                 isSubstringContains(book.getAuthor(), author) &&
                 isSubstringContains(book.getGenre(), genre) &&
                 isSubstringContains(book.getShelf(), shelf)).forEach(resultList::add);
@@ -144,7 +141,7 @@ public class Library extends ArrayList<Book> {
             String author,
             String genre,
             String shelf) {
-        Optional<Book> optional = this.stream().filter(book ->
+        Optional<Book> optional = list.stream().filter(book ->
                 isSubstringContains(book.getName(), name) &&
                         isSubstringContains(book.getAuthor(), author) &&
                         isSubstringContains(book.getGenre(), genre) &&
@@ -155,21 +152,21 @@ public class Library extends ArrayList<Book> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (list == o) return true;
         if (!(o instanceof Library)) return false;
         Library library = (Library) o;
-        return this.equals(library);
+        return list.hashCode() == library.hashCode() || list.equals(library.getList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.toArray());
+        return Objects.hash(list.toArray());
     }
 
     private String generateShelf(Book book) {
         char letter = book.getName().toCharArray()[0];
-        int[] booksOnShelfArray = new int[this.size()];
-        for (Book value : this) {
+        int[] booksOnShelfArray = new int[list.size()];
+        for (Book value : list) {
             char[] shelfArray = value.getShelf().toCharArray();
             if (shelfArray.length > 0 && shelfArray[0] == letter) {
                 StringBuilder numOfShelf = new StringBuilder();
@@ -195,7 +192,8 @@ public class Library extends ArrayList<Book> {
     }
 
     private boolean isIndexIncorrect(int index) {
-        return index >= this.size() && index <= 0;
+        return index >= list.size() || index < 0;
     }
+
 
 }
