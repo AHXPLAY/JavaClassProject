@@ -155,7 +155,7 @@ public class Library {
         if (list == o) return true;
         if (!(o instanceof Library)) return false;
         Library library = (Library) o;
-        return list.hashCode() == library.hashCode() || list.equals(library.getList());
+        return this.hashCode() == library.hashCode() || list.equals(library.getList());
     }
 
     @Override
