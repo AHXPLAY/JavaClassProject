@@ -104,9 +104,9 @@ class LibraryTest {
     void findByName() {
         Book b1 = new Book("Мертвые души", "Николай Васильевич Гоголь", "Поэма");
 
-        assertEquals(b1, lib.findByName("Ме"));
+        assertEquals(b1, lib.findByName("Ме").orElse(null));
 
-        assertNull(lib.findByName("Словарь"));
+        assertFalse(lib.findByName("Словарь").isPresent());
     }
 
     @Test
@@ -123,9 +123,9 @@ class LibraryTest {
     void findByAuthor() {
         Book b1 = new Book("Руслан и Людмила", "Алекасандр Сергеевич Пушкин", "Поэма");
 
-        assertEquals(b1, lib.findByAuthor("Пушкин"));
+        assertEquals(b1, lib.findByAuthor("Пушкин").orElse(null));
 
-        assertNull(lib.findByAuthor("Джордж Мартин"));
+        assertFalse(lib.findByAuthor("Джордж Мартин").isPresent());
     }
 
     @Test
@@ -142,9 +142,9 @@ class LibraryTest {
     void findByGenre() {
         Book b1 = new Book("Ромэо и Джульетта", "Уильям Шекспир", "Драма");
 
-        assertEquals(b1, lib.findByGenre("Дра"));
+        assertEquals(b1, lib.findByGenre("Дра").orElse(null));
 
-        assertNull(lib.findByGenre("Трактор"));
+        assertFalse(lib.findByGenre("Трактор").isPresent());
     }
 
     @Test
@@ -163,9 +163,9 @@ class LibraryTest {
     void findByShelf() {
         Book b1 = new Book("Гарри Поттер и философский камень", "Джоан Роулинг", "Фэнтези");
 
-        assertEquals(b1, lib.findByShelf("Г0"));
+        assertEquals(b1, lib.findByShelf("Г0").orElse(null));
 
-        assertNull(lib.findByName("Г1"));
+        assertFalse(lib.findByName("Г1").isPresent());
     }
 
     @Test
@@ -185,9 +185,9 @@ class LibraryTest {
     void findByParams() {
         Book b1 = new Book("Руслан и Людмила", "Алекасандр Сергеевич Пушкин", "Поэма");
 
-        assertEquals(b1, lib.findByParams("Р", "ш", "ма", null));
+        assertEquals(b1, lib.findByParams("Р", "ш", "ма", null).orElse(null));
 
-        assertNull(lib.findByParams("Х", "asdasdf", "aaa", "tt"));
+        assertFalse(lib.findByParams("Х", "asdasdf", "aaa", "tt").isPresent());
     }
 
     @Test
@@ -221,6 +221,60 @@ class LibraryTest {
         assertEquals(l1, l2);
 
         assertNotEquals(l1, null);
+    }
+
+    Book testBook = new Book("Book", "Author", "Genre");
+    @Test
+    void getName() {
+        assertEquals("Book", testBook.getName());
+    }
+
+    @Test
+    void setName() {
+        testBook.setName("Not previous name");
+        assertEquals("Not previous name", testBook.getName());
+    }
+
+    @Test
+    void getAuthor() {
+        assertEquals("Author", testBook.getAuthor());
+    }
+
+    @Test
+    void setAuthor() {
+        testBook.setAuthor("Not previous author");
+        assertEquals("Not previous author", testBook.getAuthor());
+    }
+
+    @Test
+    void getShelf() {
+        assertNull( testBook.getShelf());
+    }
+
+    @Test
+    void setShelf() {
+        testBook.setShelf("Not previous shelf");
+        assertEquals("Not previous shelf", testBook.getShelf());
+    }
+
+    @Test
+    void getGenre() {
+        assertEquals("Genre", testBook.getGenre());
+    }
+
+    @Test
+    void setGenre() {
+        testBook.setGenre("Not previous genre");
+        assertEquals("Not previous genre", testBook.getGenre());
+    }
+    @Test
+    void bookToString() {
+        assertEquals("Book{" +
+                "name='" + testBook.getName() + '\'' +
+                ", author='" + testBook.getAuthor() + '\'' +
+                ", genre='" + testBook.getGenre() + '\'' +
+                ", shelf='" + testBook.getShelf() + '\'' +
+                '}', testBook.toString());
     }
 
 }

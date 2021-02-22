@@ -47,31 +47,6 @@ public class Book {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book)) return false;
-        Book book = (Book) o;
-
-        boolean isNamesEquals =
-                (name == null && book.name == null) || (name != null && name.equals(book.name));
-
-        boolean isAuthorsEquals =
-                (author == null && book.author == null) || (author != null && author.equals(book.author));
-
-        boolean isGenresEquals =
-                (genre == null && book.genre == null) || (genre != null && genre.equals(book.genre));
-
-        return  isNamesEquals &&
-                isAuthorsEquals &&
-                isGenresEquals;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, author, genre);
-    }
-
-    @Override
     public String toString() {
         return "Book{" +
                 "name='" + name + '\'' +
@@ -79,5 +54,20 @@ public class Book {
                 ", genre='" + genre + '\'' +
                 ", shelf='" + shelf + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
+        return Objects.equals(name, book.name) &&
+                Objects.equals(author, book.author) &&
+                Objects.equals(genre, book.genre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, author, genre);
     }
 }

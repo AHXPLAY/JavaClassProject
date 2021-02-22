@@ -1,6 +1,8 @@
 package org.spbstu.yuryvalentinasov;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Вариант 21. Библиотека
@@ -35,11 +37,8 @@ public class Library {
     }
 
     public boolean deleteBook(Book book) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(book)) {
-                return list.remove(book);
-            }
-        }
+        int k = list.indexOf(book);
+        if (k != -1) return list.remove(book);
         return false;
     }
 
@@ -90,23 +89,23 @@ public class Library {
         return findAllByParams(name, null, null, null);
     }
 
-    public Book findByName(String name) {
+    public Optional<Book> findByName(String name) {
         return findByParams(name, null, null, null);
     }
 
-    public List<Book>  findAllByAuthor(String author) {
+    public List<Book> findAllByAuthor(String author) {
         return findAllByParams(null, author, null, null);
     }
 
-    public Book findByAuthor(String author) {
+    public Optional<Book> findByAuthor(String author) {
         return findByParams(null, author, null, null);
     }
 
-    public List<Book>  findAllByGenre(String genre) {
+    public List<Book> findAllByGenre(String genre) {
         return findAllByParams(null, null, genre, null);
     }
 
-    public Book findByGenre(String genre) {
+    public Optional<Book> findByGenre(String genre) {
         return findByParams(null, null, genre, null);
     }
 
@@ -115,52 +114,54 @@ public class Library {
         return findAllByParams(null, null, null, shelf);
     }
 
-    public Book findByShelf(String shelf) {
+    public Optional<Book> findByShelf(String shelf) {
         return findByParams(null, null, null, shelf);
     }
 
 
-    public List<Book>  findAllByParams(
+    public List<Book> findAllByParams(
             String name,
             String author,
             String genre,
             String shelf) {
-
-        ArrayList<Book> resultList = new ArrayList<>();
-
-        list.stream().filter(book -> isSubstringContains(book.getName(), name) &&
-                isSubstringContains(book.getAuthor(), author) &&
-                isSubstringContains(book.getGenre(), genre) &&
-                isSubstringContains(book.getShelf(), shelf)).forEach(resultList::add);
-
-        return resultList;
+        return filterList(name, author, genre, shelf).collect(Collectors.toList());
     }
 
-    public Book findByParams(
+    public Optional<Book> findByParams(
             String name,
             String author,
             String genre,
             String shelf) {
-        Optional<Book> optional = list.stream().filter(book ->
+        return filterList(name, author, genre, shelf).findFirst();
+    }
+
+    private Stream<Book> filterList(String name, String author, String genre, String shelf) {
+        return list.stream().filter(book ->
                 isSubstringContains(book.getName(), name) &&
                         isSubstringContains(book.getAuthor(), author) &&
                         isSubstringContains(book.getGenre(), genre) &&
-                        isSubstringContains(book.getShelf(), shelf)).findFirst();
+                        isSubstringContains(book.getShelf(), shelf));
+    }
 
-        return optional.orElse(null);
+    @Override
+    public String toString() {
+        return "Library{" +
+                "list=" + list +
+                ", shelfSize=" + shelfSize +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (list == o) return true;
+        if (this == o) return true;
         if (!(o instanceof Library)) return false;
         Library library = (Library) o;
-        return this.hashCode() == library.hashCode() || list.equals(library.getList());
+        return Objects.equals(list, library.list);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(list.toArray());
+        return Objects.hash(list, shelfSize);
     }
 
     private String generateShelf(Book book) {
