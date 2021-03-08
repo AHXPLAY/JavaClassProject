@@ -6,19 +6,19 @@ import java.util.stream.Stream;
 
 /**
  * Вариант 21. Библиотека
- * Создать класс который хранит информацию о книгах
+ * <p>Создать класс который хранит информацию о книгах
  * Поля: список кинг {@link Book}, размер полки.
  * Методы:
  * добавить книгу addBook,
  * удалить кингу deleteBook,
  * изменить существующую книгу changeBook,
  * переставить книгу на другую полку changeShelf,
- * поиск книг по их параметрам.
+ * поиск книг по их параметрам.</p>
  * <p>
  * Для избежания NPE добавил всем методам добавляющим
  * в список новые объекты (в том числе и конструктору)
  * проверку объектов на null, таким образом, что в
- * список нельзя добавить null.
+ * список нельзя добавить null.</p>
  */
 public class Library {
     private final List<Book> list = new ArrayList<>();
@@ -36,17 +36,34 @@ public class Library {
         return true;
     }
 
+    /**
+     * Удаляет книгу из библиотеки по ее экземпляру
+     *
+     * @param book {@code Book} удаляемая книга
+     * @return true если удаление успешно, иначе false
+     */
     public boolean deleteBook(Book book) {
         int k = list.indexOf(book);
         if (k != -1) return list.remove(book);
         return false;
     }
 
+    /**
+     * Удаляет книгу из библиотеки по ее индексу в списке
+     *
+     * @param index индекс книги в списке
+     * @return true если удаление успешно, иначе false
+     */
     public boolean deleteBook(int index) {
         if (isIndexIncorrect(index)) return false;
         return list.remove(index) != null;
     }
 
+    /**
+     * Конструктор
+     *
+     * @param books varargs  {@code Book} которые добавляются в библиотеку при создании
+     */
     public Library(Book... books) {
         if (books != null)
             for (Book book : books) {
@@ -54,12 +71,25 @@ public class Library {
             }
     }
 
+    /**
+     * Меняет книгу по ее индексу.
+     *
+     * @param index индекс изменяемой книги
+     * @param newBook новая книга
+     * @return true в случае успешной замены, иначе false
+     */
     public boolean changeBook(int index, Book newBook) {
         if (isIndexIncorrect(index)) return false;
         list.set(index, newBook);
         return true;
     }
-
+    /**
+     * Меняет книгу по ее экземпляру.
+     *
+     * @param changingBook экзмепляр изменяемой книги
+     * @param newBook новая книга
+     * @return true в случае успешной замены, иначе false
+     */
     public boolean changeBook(Book changingBook, Book newBook) {
         if (list.contains(changingBook)) {
             int index = list.indexOf(changingBook);
@@ -68,6 +98,13 @@ public class Library {
         return false;
     }
 
+    /**
+     * Изменяет полку книги по ее индексу
+     *
+     * @param index индекс книги в списке
+     * @param number номер полки на которую она перемещается
+     * @return true в случае успешной замены, иначе false
+     */
     public boolean changeShelfOrder(int index, int number) {
         if (isIndexIncorrect(index)) return false;
         Book book = list.get(index);
@@ -77,6 +114,13 @@ public class Library {
         return true;
     }
 
+    /**
+     * Изменяет полку книги по ее экземпляру
+     *
+     * @param book экзмепляр книги в списке
+     * @param number номер полки на которую она перемещается
+     * @return true в случае успешной замены, иначе false
+     */
     public boolean changeShelfOrder(Book book, int number) {
         if (list.contains(book)) {
             int index = list.indexOf(book);
@@ -85,39 +129,93 @@ public class Library {
         return false;
     }
 
+    /**
+     * Ищет все книги с переданным названием
+     *
+     * @param name название книги
+     * @return {@code List<Book>}, со всеми найденными книгами.
+     */
     public List<Book> findAllByName(String name) {
         return findAllByParams(name, null, null, null);
     }
-
+    /**
+     * Ищет первую книгу по переданному названию.
+     *
+     * @param name имя книги
+     * @return {@code Optional<Book>}, с книгой если она найдена, либо без нее.
+     */
     public Optional<Book> findByName(String name) {
         return findByParams(name, null, null, null);
     }
 
+    /**
+     * Ищет все книги переданного автора
+     *
+     * @param author автор книги
+     * @return {@code List<Book>}, со всеми найденными книгами.
+     */
     public List<Book> findAllByAuthor(String author) {
         return findAllByParams(null, author, null, null);
     }
 
+    /**
+     * Ищет первую книгу переданного автора.
+     *
+     * @param author жанр книги
+     * @return {@code Optional<Book>}, с книгой если она найдена, либо без нее.
+     */
     public Optional<Book> findByAuthor(String author) {
         return findByParams(null, author, null, null);
     }
 
+    /**
+     * Ищет все книги переданного жанра
+     *
+     * @param genre жанр книги
+     * @return {@code List<Book>}, со всеми найденными книгами.
+     */
     public List<Book> findAllByGenre(String genre) {
         return findAllByParams(null, null, genre, null);
     }
 
+    /**
+     * Ищет первую книгу переданного жанра
+     *
+     * @param genre жанр книги
+     * @return {@code Optional<Book>}, с книгой если она найдена, либо без нее.
+     */
     public Optional<Book> findByGenre(String genre) {
         return findByParams(null, null, genre, null);
     }
 
-
+    /**
+     * Ищет все книги на переданной полке
+     *
+     * @param shelf полка на которой стоит книга
+     * @return {@code List<Book>}, со всеми найденными книгами.
+     */
     public List<Book> findAllByShelf(String shelf) {
         return findAllByParams(null, null, null, shelf);
     }
 
+    /**
+     * Ищет первую книгу на переданной полке
+     *
+     * @param shelf полка на которой стоит книга
+     * @return {@code Optional<Book>}, с книгой если она найдена, либо без нее.
+     */
     public Optional<Book> findByShelf(String shelf) {
         return findByParams(null, null, null, shelf);
     }
-
+    /**
+     * Ищет все книги подходящие переданным аргументам
+     *
+     * @param name название книги
+     * @param author автор книги
+     * @param genre жанр книги
+     * @param shelf полка на которой стоит книга
+     * @return {@code List<Book>}, со всеми найденными книгами.
+     */
 
     public List<Book> findAllByParams(
             String name,
@@ -127,6 +225,15 @@ public class Library {
         return filterList(name, author, genre, shelf).collect(Collectors.toList());
     }
 
+    /**
+     * Ищет первую книгу подходящую переданным аргументам
+     *
+     * @param name название книги
+     * @param author автор книги
+     * @param genre жанр книги
+     * @param shelf полка на которой стоит книга
+     * @return {@code Optional<Book>}, с книгой если она найдена, либо без нее.
+     */
     public Optional<Book> findByParams(
             String name,
             String author,
@@ -135,6 +242,15 @@ public class Library {
         return filterList(name, author, genre, shelf).findFirst();
     }
 
+    /**
+     * Фильтрует из списка книги с подходящими параметрами. В случае
+     * если параметр равен null, то по нему не происходит фильтрации.
+     * @param name название книги
+     * @param author автор книги
+     * @param genre жанр книги
+     * @param shelf полка на которой стоит книга
+     * @return {@code Stream<Book>} содержащий книги подходящие по переданным аргументам.
+     */
     private Stream<Book> filterList(String name, String author, String genre, String shelf) {
         return list.stream().filter(book ->
                 isSubstringContains(book.getName(), name) &&
@@ -164,6 +280,11 @@ public class Library {
         return Objects.hash(list, shelfSize);
     }
 
+    /** generateShelf метод, генерирующий полку.
+     * Код полки создается из первого символа в названии
+     * книги и порядкового номера на полке. Размер полки задается
+     * константой shelfSize.
+     **/
     private String generateShelf(Book book) {
         char letter = book.getName().toCharArray()[0];
         int[] booksOnShelfArray = new int[list.size()];
@@ -184,7 +305,14 @@ public class Library {
         return letter + "" + 0;
     }
 
-
+    /**
+     * isSubstringContains метод, являющийся вспомогательным для поиска книг в библиотеке.
+     * Проверяет наличие подстроки в строке в не зависимости от реигстра.
+     *
+     * @param text {@code String} текст, в котором ищется подстрока
+     * @param substring {@code String} подстрока, котоаря ищется в тексте.
+     * @return значение true если подстрока содержится в строке либо если значение substring равно null, иначе false
+     **/
     private boolean isSubstringContains(String text, String substring) {
         if (substring == null) return true;
         return text.lastIndexOf(substring) != -1 ||
@@ -192,6 +320,11 @@ public class Library {
                 text.toUpperCase().lastIndexOf(substring) != -1;
     }
 
+    /**
+     * Проверяет входит ли индекс в размеры списка
+     * @param index индекс проверяемого элемента
+     * @return значение true если подстрока содержится в строке, иначе false
+     */
     private boolean isIndexIncorrect(int index) {
         return index >= list.size() || index < 0;
     }

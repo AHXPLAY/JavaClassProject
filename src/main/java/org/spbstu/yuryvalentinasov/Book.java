@@ -2,6 +2,10 @@ package org.spbstu.yuryvalentinasov;
 
 import java.util.Objects;
 
+/**
+ * Вспомогательный класс для {@link Library}, представляющий книгу.
+ * Каждая книга содержит имя, автора, жанр и полку на которой она стоит.
+ */
 public class Book {
     private String name;
     private String author;
